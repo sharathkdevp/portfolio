@@ -93,7 +93,7 @@ const THEMES = {
     btnPrimary: "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 shadow-lg hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-105",
     gradientBg: "bg-gradient-to-br from-emerald-50 via-teal-50/30 to-cyan-50",
   },
-};
+} as const;
 
 /* =======================
    Site Data
@@ -187,12 +187,8 @@ const FloatingParticles = ({ theme }: { theme: any }) => {
         <div
           key={i}
           ref={(el) => (particleRefs.current[i] = el as any)}
-          className={`absolute w-1 h-1 rounded-full ${
-            theme.name === "darkEmerald" ? "bg-emerald-400" : "bg-teal-400"
-          }`}
-          style={{
-            boxShadow: `0 0 10px ${theme.name === "darkEmerald" ? "#34d399" : "#2dd4bf"}`,
-          }}
+          className={`absolute w-1 h-1 rounded-full ${theme.name === "darkEmerald" ? "bg-emerald-400" : "bg-teal-400"}`}
+          style={{ boxShadow: `0 0 10px ${theme.name === "darkEmerald" ? "#34d399" : "#2dd4bf"}` }}
         />
       ))}
     </div>
@@ -206,27 +202,21 @@ const AnimatedBackground = ({ theme }: { theme: any }) => (
         <div
           className="absolute -top-40 -left-40 w-96 h-96 rounded-full opacity-30 animate-pulse"
           style={{
-            background: `radial-gradient(circle, ${
-              theme.name === "darkEmerald" ? "#10b981" : "#14b8a6"
-            } 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#10b981" : "#14b8a6"} 0%, transparent 70%)`,
             animation: "float 6s ease-in-out infinite",
           }}
         />
         <div
           className="absolute top-1/2 -right-40 w-80 h-80 rounded-full opacity-20 animate-pulse"
           style={{
-            background: `radial-gradient(circle, ${
-              theme.name === "darkEmerald" ? "#06b6d4" : "#0ea5e9"
-            } 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#06b6d4" : "#0ea5e9"} 0%, transparent 70%)`,
             animation: "float 8s ease-in-out infinite reverse",
           }}
         />
         <div
           className="absolute -bottom-40 left-1/3 w-96 h-96 rounded-full opacity-25 animate-pulse"
           style={{
-            background: `radial-gradient(circle, ${
-              theme.name === "darkEmerald" ? "#22d3ee" : "#99f6e4"
-            } 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#22d3ee" : "#99f6e4"} 0%, transparent 70%)`,
             animation: "float 10s ease-in-out infinite",
           }}
         />
@@ -288,9 +278,7 @@ const Section = ({
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       }`}
     >
-      <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight mb-12 text-center ${theme.heading}`}>
-        {title}
-      </h2>
+      <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight mb-12 text-center ${theme.heading}`}>{title}</h2>
       <div>{children}</div>
     </section>
   );
@@ -500,8 +488,8 @@ export default function Page() {
 
   useEffect(() => {
     const saved = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    const nextTheme = saved === "lightEmerald" || saved === "darkEmerald" ? (saved as keyof typeof THEMES) : "darkEmerald";
-    setThemeName(nextTheme);
+    const next = saved === "lightEmerald" || saved === "darkEmerald" ? (saved as keyof typeof THEMES) : "darkEmerald";
+    setThemeName(next);
     setMounted(true);
   }, []);
 
@@ -579,6 +567,7 @@ export default function Page() {
                 <span className={theme.heading}>{PROFILE.name}</span>
               </h1>
 
+              {/* Smooth role rotator fixes the unused component warning */}
               <RoleRotator roles={PROFILE.roles} theme={theme} height={80} intervalMs={4500} transitionMs={900} />
 
               <p className="text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl opacity-90 text-justify hyphens-auto">{PROFILE.blurb}</p>
@@ -681,30 +670,15 @@ export default function Page() {
       <Section id="about" title="About My Journey" theme={theme} delay={100}>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            {
-              h: "Past",
-              t: "Began my career as a Test Automation Engineer, building QA frameworks, and then transitioned into backend development.",
-              icon: "📚",
-              gradient: "from-teal-400 to-emerald-500",
-            },
-            {
-              h: "Present",
-              t: "Building secure, scalable microservices for banking & training platforms; driving CI/CD and observability.",
-              icon: "🚀",
-              gradient: "from-emerald-400 to-cyan-500",
-            },
-            {
-              h: "Future",
-              t: "Designing event-driven systems at scale, with a focus on reliability and developer productivity.",
-              icon: "🌟",
-              gradient: "from-cyan-400 to-teal-500",
-            },
-          ].map((period, index) => (
-            <Card key={period.h} theme={theme} delay={index * 200} gradient={period.gradient}>
+            { h: "Past", t: "Began my career as a Test Automation Engineer, building QA frameworks, and then transitioned into backend development.", icon: "📚", gradient: "from-teal-400 to-emerald-500" },
+            { h: "Present", t: "Building secure, scalable microservices for banking & training platforms; driving CI/CD and observability.", icon: "🚀", gradient: "from-emerald-400 to-cyan-500" },
+            { h: "Future", t: "Designing event-driven systems at scale, with a focus on reliability and developer productivity.", icon: "🌟", gradient: "from-cyan-400 to-teal-500" },
+          ].map((p, index) => (
+            <Card key={p.h} theme={theme} delay={index * 200} gradient={p.gradient}>
               <div className="text-white text-center">
-                <div className="text-6xl mb-4">{period.icon}</div>
-                <h3 className="text-xl font-bold mb-4">{period.h}</h3>
-                <p className="leading-relaxed opacity-90">{period.t}</p>
+                <div className="text-6xl mb-4">{p.icon}</div>
+                <h3 className="text-xl font-bold mb-4">{p.h}</h3>
+                <p className="leading-relaxed opacity-90">{p.t}</p>
               </div>
             </Card>
           ))}
@@ -713,15 +687,15 @@ export default function Page() {
 
       <Section id="skills" title="Skills & Technologies" theme={theme} delay={200}>
         <div className="grid md:grid-cols-2 gap-8">
-          {SKILL_GROUPS.map((group, groupIndex) => (
-            <Card key={group.label} theme={theme} delay={groupIndex * 150}>
+          {SKILL_GROUPS.map((group, gi) => (
+            <Card key={group.label} theme={theme} delay={gi * 150}>
               <div className="flex items-center gap-4 mb-6">
                 <div className={`p-3 rounded-xl ${theme.name === "darkEmerald" ? "bg-emerald-500/20" : "bg-teal-500/20"}`}>{group.icon}</div>
                 <h3 className="text-xl font-bold">{group.label}</h3>
               </div>
               <div className="flex flex-wrap gap-3">
-                {group.items.map((skill, skillIndex) => (
-                  <Pill key={skill} theme={theme} delay={groupIndex * 150 + skillIndex * 50}>
+                {group.items.map((skill, si) => (
+                  <Pill key={skill} theme={theme} delay={gi * 150 + si * 50}>
                     {skill}
                   </Pill>
                 ))}
@@ -754,12 +728,7 @@ export default function Page() {
       <Section id="cta" title="Want To..." theme={theme} delay={400}>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            {
-              h: "Offer job opportunity?",
-              t: "Open to backend/SDET roles building Java/Spring systems and automation.",
-              a: { href: `mailto:${PROFILE.email}`, label: "Email me" },
-              icon: "💼",
-            },
+            { h: "Offer job opportunity?", t: "Open to backend/SDET roles building Java/Spring systems and automation.", a: { href: `mailto:${PROFILE.email}`, label: "Email me" }, icon: "💼" },
             {
               h: "Connect?",
               t: "Always happy to chat about backend architecture, testing, and DevOps.",
@@ -818,11 +787,7 @@ export default function Page() {
             </a>
 
             <div className="group">
-              <div
-                className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${
-                  theme.name === "darkEmerald" ? "bg-cyan-500/20" : "bg-teal-300/20"
-                } transition-all duration-300 group-hover:scale-110`}
-              >
+              <div className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${theme.name === "darkEmerald" ? "bg-cyan-500/20" : "bg-teal-300/20"} transition-all duration-300 group-hover:scale-110`}>
                 <MapPin className="w-8 h-8 mx-auto" />
               </div>
               <div className="font-medium">{PROFILE.location}</div>
@@ -830,12 +795,7 @@ export default function Page() {
 
             <div className="flex gap-4 justify-center items-center">
               {isHttpUrl(PROFILE.links.linkedin) && (
-                <a
-                  href={PROFILE.links.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 ${theme.btnPrimary}`}
-                >
+                <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 ${theme.btnPrimary}`}>
                   <Linkedin className="w-6 h-6" />
                 </a>
               )}
