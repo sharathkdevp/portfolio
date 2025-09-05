@@ -2,7 +2,22 @@
 
 import React, { useEffect, useState, useRef } from "react";
 
-// ===== Helpers =====
+/* ---------- Types ---------- */
+type ThemeName = "darkEmerald" | "lightEmerald";
+
+type Theme = {
+  name: ThemeName;
+  page: string;
+  nav: string;
+  heading: string;
+  card: string;
+  pill: string;
+  glowText: string;
+  btnPrimary: string;
+  gradientBg: string;
+};
+
+/* ---------- Helpers ---------- */
 const isHttpUrl = (url: string) => {
   try {
     const u = new URL(url);
@@ -12,7 +27,7 @@ const isHttpUrl = (url: string) => {
   }
 };
 
-// ===== SVG Icons =====
+/* ---------- SVG Icons ---------- */
 const Mail = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -63,10 +78,8 @@ const Moon = ({ className = "w-4 h-4" }: { className?: string }) => (
   </svg>
 );
 
-// =============================================
-// THEMES — Emerald/Teal only
-// =============================================
-const THEMES = {
+/* ---------- THEMES (emerald/teal only) ---------- */
+const THEMES: Record<ThemeName, Theme> = {
   darkEmerald: {
     name: "darkEmerald",
     page: "bg-slate-950 text-slate-100",
@@ -91,9 +104,7 @@ const THEMES = {
   },
 };
 
-// =============================================
-// SITE DATA
-// =============================================
+/* ---------- SITE DATA ---------- */
 const PROFILE = {
   name: "Sharath Kandagattla",
   tagline: "Backend Developer / Software Developer · Java/Spring",
@@ -116,31 +127,8 @@ const SKILL_GROUPS = [
   { label: "Testing & Quality", icon: <span className="w-5 h-5">✅</span>, items: ["JUnit", "TestNG", "Selenium", "Cypress", "REST Assured", "BrowserStack", "Splunk"] },
 ];
 
-const PROJECTS = [
-  { 
-    name: "US Bank – Loan Processing Platform", 
-    summary: "High-throughput microservices with Kafka and AWS; reduced API p95 by ~35%.", 
-    madeWith: ["Java 17", "Spring Boot", "Kafka", "Docker", "Kubernetes", "AWS"],
-    gradient: "from-emerald-400 to-teal-500"
-  },
-  { 
-    name: "NRA – Training & Certification LMS", 
-    summary: "APIs for registration, quiz scoring, certificate issuance; batch jobs for compliance exports.", 
-    madeWith: ["Spring Boot", "Spring Batch", "Oracle PL/SQL", "Splunk"],
-    gradient: "from-teal-400 to-cyan-500"
-  },
-  { 
-    name: "QVC – Automation Suite", 
-    summary: "Hybrid Selenium/TestNG framework with BrowserStack coverage + CI/CD integration.", 
-    madeWith: ["Java", "Selenium", "TestNG", "REST Assured", "Jenkins"],
-    gradient: "from-green-400 to-emerald-500"
-  },
-];
-
-// =============================================
-// Components
-// =============================================
-const FloatingParticles = ({ theme }: { theme: any }) => {
+/* ---------- Components ---------- */
+const FloatingParticles = ({ theme }: { theme: Theme }) => {
   const particleRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
@@ -155,22 +143,21 @@ const FloatingParticles = ({ theme }: { theme: any }) => {
           const endX = startX + (Math.random() - 0.5) * 300;
           const endY = -50;
 
-          particle.style.left = startX + "px";
-          particle.style.top = startY + "px";
+          particle.style.left = `${startX}px`;
+          particle.style.top = `${startY}px`;
           particle.style.opacity = "0";
 
-          particle
-            .animate(
-              [
-                { transform: `translate(0, 0) scale(0.5)`, opacity: 0 },
-                { transform: `translate(0, -100px) scale(1)`, opacity: 0.7, offset: 0.1 },
-                { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(0.5)`, opacity: 0 },
-              ],
-              { duration, easing: "ease-out" }
-            )
-            .addEventListener("finish", () => {
-              setTimeout(animateParticle, Math.random() * 5000);
-            });
+          const anim = particle.animate(
+            [
+              { transform: `translate(0, 0) scale(0.5)`, opacity: 0 },
+              { transform: `translate(0, -100px) scale(1)`, opacity: 0.7, offset: 0.1 },
+              { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(0.5)`, opacity: 0 },
+            ],
+            { duration, easing: "ease-out" }
+          );
+          anim.addEventListener("finish", () => {
+            setTimeout(animateParticle, Math.random() * 5000);
+          });
         };
 
         setTimeout(animateParticle, index * 2000);
@@ -187,39 +174,28 @@ const FloatingParticles = ({ theme }: { theme: any }) => {
             if (el) particleRefs.current[i] = el;
           }}
           className={`absolute w-1 h-1 rounded-full ${theme.name === "darkEmerald" ? "bg-emerald-400" : "bg-teal-400"}`}
-          style={{
-            boxShadow: `0 0 10px ${theme.name === "darkEmerald" ? "#34d399" : "#2dd4bf"}`,
-          }}
+          style={{ boxShadow: `0 0 10px ${theme.name === "darkEmerald" ? "#34d399" : "#2dd4bf"}` }}
         />
       ))}
     </div>
   );
 };
 
-const AnimatedBackground = ({ theme }: { theme: any }) => (
+const AnimatedBackground = ({ theme }: { theme: Theme }) => (
   <div className="fixed inset-0 -z-10">
     <div className={`absolute inset-0 ${theme.gradientBg}`}>
       <div className="absolute inset-0 overflow-hidden">
         <div
           className="absolute -top-40 -left-40 w-96 h-96 rounded-full opacity-30 animate-pulse"
-          style={{
-            background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#10b981" : "#14b8a6"} 0%, transparent 70%)`,
-            animation: "float 6s ease-in-out infinite",
-          }}
+          style={{ background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#10b981" : "#14b8a6"} 0%, transparent 70%)`, animation: "float 6s ease-in-out infinite" }}
         />
         <div
           className="absolute top-1/2 -right-40 w-80 h-80 rounded-full opacity-20 animate-pulse"
-          style={{
-            background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#06b6d4" : "#0ea5e9"} 0%, transparent 70%)`,
-            animation: "float 8s ease-in-out infinite reverse",
-          }}
+          style={{ background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#06b6d4" : "#0ea5e9"} 0%, transparent 70%)`, animation: "float 8s ease-in-out infinite reverse" }}
         />
         <div
           className="absolute -bottom-40 left-1/3 w-96 h-96 rounded-full opacity-25 animate-pulse"
-          style={{
-            background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#22d3ee" : "#99f6e4"} 0%, transparent 70%)`,
-            animation: "float 10s ease-in-out infinite",
-          }}
+          style={{ background: `radial-gradient(circle, ${theme.name === "darkEmerald" ? "#22d3ee" : "#99f6e4"} 0%, transparent 70%)`, animation: "float 10s ease-in-out infinite" }}
         />
       </div>
     </div>
@@ -250,7 +226,7 @@ const Section = ({
 }: {
   id: string;
   title: string;
-  theme: any;
+  theme: Theme;
   children: React.ReactNode;
   delay?: number;
 }) => {
@@ -260,13 +236,10 @@ const Section = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay);
-        }
+        if (entry.isIntersecting) setTimeout(() => setIsVisible(true), delay);
       },
       { threshold: 0.1 }
     );
-
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, [delay]);
@@ -291,7 +264,7 @@ const Pill = ({
   className = "",
   delay = 0,
 }: {
-  theme: any;
+  theme: Theme;
   children: React.ReactNode;
   className?: string;
   delay?: number;
@@ -300,15 +273,9 @@ const Pill = ({
   const pillRef = useRef<HTMLSpanElement | null>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setTimeout(() => setIsVisible(true), delay);
+    });
     if (pillRef.current) observer.observe(pillRef.current);
     return () => observer.disconnect();
   }, [delay]);
@@ -332,7 +299,7 @@ const Card = ({
   gradient = "",
   delay = 0,
 }: {
-  theme: any;
+  theme: Theme;
   children: React.ReactNode;
   className?: string;
   gradient?: string;
@@ -343,15 +310,9 @@ const Card = ({
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => setIsVisible(true), delay);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setTimeout(() => setIsVisible(true), delay);
+    });
     if (cardRef.current) observer.observe(cardRef.current);
     return () => observer.disconnect();
   }, [delay]);
@@ -375,7 +336,7 @@ const Card = ({
   );
 };
 
-const TechMarquee = ({ items, theme }: { items: string[]; theme: any }) => (
+const TechMarquee = ({ items, theme }: { items: string[]; theme: Theme }) => (
   <div className="relative py-12 overflow-hidden">
     <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10" />
     <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent z-10" />
@@ -423,16 +384,16 @@ const TechMarquee = ({ items, theme }: { items: string[]; theme: any }) => (
   </div>
 );
 
-// Smooth vertical role rotator (used in Hero)
+/* Smooth vertical role rotator */
 function RoleRotator({
   roles,
-  theme,
+  theme, // kept for className usage if needed later
   height = 80,
   intervalMs = 4500,
   transitionMs = 900,
 }: {
   roles: string[];
-  theme: any;
+  theme: Theme;
   height?: number;
   intervalMs?: number;
   transitionMs?: number;
@@ -450,9 +411,7 @@ function RoleRotator({
     if (idx === loop.length - 1) {
       setEnableTransition(false);
       setIdx(0);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setEnableTransition(true));
-      });
+      requestAnimationFrame(() => requestAnimationFrame(() => setEnableTransition(true)));
     }
   };
 
@@ -469,7 +428,9 @@ function RoleRotator({
       >
         {loop.map((role, i) => (
           <div key={`${role}-${i}`} style={{ height }} className="flex items-center">
-            <span className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${theme.glowText}`}>{role}</span>
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 animate-pulse">
+              {role}
+            </span>
           </div>
         ))}
       </div>
@@ -477,17 +438,15 @@ function RoleRotator({
   );
 }
 
-// =============================================
-// Main Component
-// =============================================
+/* ---------- Main Page ---------- */
 export default function Page() {
-  const [themeName, setThemeName] = useState<keyof typeof THEMES>("darkEmerald");
+  const [themeName, setThemeName] = useState<ThemeName>("darkEmerald");
   const [mounted, setMounted] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const saved = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    const next = saved === "lightEmerald" || saved === "darkEmerald" ? (saved as keyof typeof THEMES) : "darkEmerald";
+    const next: ThemeName = saved === "lightEmerald" || saved === "darkEmerald" ? (saved as ThemeName) : "darkEmerald";
     setThemeName(next);
     setMounted(true);
   }, []);
@@ -502,9 +461,9 @@ export default function Page() {
 
   const toggleTheme = () => {
     setThemeName((t) => {
-      const next = t === "darkEmerald" ? "lightEmerald" : "darkEmerald";
+      const next: ThemeName = t === "darkEmerald" ? "lightEmerald" : "darkEmerald";
       if (typeof window !== "undefined") localStorage.setItem("theme", next);
-      return next as keyof typeof THEMES;
+      return next;
     });
   };
 
@@ -513,19 +472,15 @@ export default function Page() {
       <AnimatedBackground theme={theme} />
       <FloatingParticles theme={theme} />
 
-      {/* Custom Cursor Effect */}
+      {/* Custom Cursor */}
       {mounted && (
         <div
           className="fixed w-4 h-4 rounded-full pointer-events-none z-50 mix-blend-difference bg-white"
-          style={{
-            left: mousePosition.x - 8,
-            top: mousePosition.y - 8,
-            transition: "transform 0.1s ease",
-          }}
+          style={{ left: mousePosition.x - 8, top: mousePosition.y - 8, transition: "transform 0.1s ease" }}
         />
       )}
 
-      {/* Navigation */}
+      {/* Nav */}
       <header className={`sticky top-0 z-40 ${theme.nav}`}>
         <nav className="mx-auto max-w-6xl flex items-center justify-between px-6 h-20">
           <a href="#home" className={`text-2xl font-bold tracking-tight transition-all duration-300 hover:scale-110 ${theme.heading}`}>
@@ -545,18 +500,14 @@ export default function Page() {
                 </a>
               ))}
             </div>
-            <button
-              onClick={toggleTheme}
-              className={`rounded-xl p-3 inline-flex items-center transition-all duration-300 ${theme.btnPrimary}`}
-              aria-label="Toggle color theme"
-            >
+            <button onClick={toggleTheme} className={`rounded-xl p-3 inline-flex items-center transition-all duration-300 ${theme.btnPrimary}`} aria-label="Toggle color theme">
               {mounted ? (themeName === "darkEmerald" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />) : <Moon className="w-5 h-5" />}
             </button>
           </div>
         </nav>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section id="home" className="relative min-h-screen flex items-center justify-center px-6">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div className="text-center lg:text-left">
@@ -566,7 +517,6 @@ export default function Page() {
                 <span className={theme.heading}>{PROFILE.name}</span>
               </h1>
 
-              {/* Smooth Role Rotator */}
               <RoleRotator roles={PROFILE.roles} theme={theme} height={80} intervalMs={4500} transitionMs={900} />
 
               <p className="text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl opacity-90 text-justify hyphens-auto">{PROFILE.blurb}</p>
@@ -613,9 +563,7 @@ export default function Page() {
                 <a
                   href="#projects"
                   className={`px-8 py-4 rounded-2xl font-semibold text-lg border-2 transition-all duration-300 hover:scale-105 ${
-                    theme.name === "darkEmerald"
-                      ? "border-slate-600 hover:border-emerald-400 hover:bg-slate-800"
-                      : "border-slate-300 hover:border-teal-400 hover:bg-slate-50"
+                    theme.name === "darkEmerald" ? "border-slate-600 hover:border-emerald-400 hover:bg-slate-800" : "border-slate-300 hover:border-teal-400 hover:bg-slate-50"
                   }`}
                 >
                   View Work
@@ -628,18 +576,12 @@ export default function Page() {
             <Card theme={theme} className="relative z-10" delay={300}>
               <h3 className={`text-2xl font-bold mb-6 ${theme.heading}`}>Core Focus</h3>
               <div className="grid gap-4">
-                {["🚀 Java / Spring Boot", "⚡ Microservices", "🗄️ SQL & Data Modeling", "📡 Kafka & Messaging", "🐳 CI/CD, Docker, K8s", "🧪 Test Automation (SDET)"].map(
-                  (item, index) => (
-                    <div
-                      key={item}
-                      className="flex items-center gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-105"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <span className="text-2xl">{item.split(" ")[0]}</span>
-                      <span className="font-medium">{item.substring(2)}</span>
-                    </div>
-                  )
-                )}
+                {["🚀 Java / Spring Boot", "⚡ Microservices", "🗄️ SQL & Data Modeling", "📡 Kafka & Messaging", "🐳 CI/CD, Docker, K8s", "🧪 Test Automation (SDET)"].map((item, index) => (
+                  <div key={item} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-105" style={{ animationDelay: `${index * 100}ms` }}>
+                    <span className="text-2xl">{item.split(" ")[0]}</span>
+                    <span className="font-medium">{item.substring(2)}</span>
+                  </div>
+                ))}
               </div>
             </Card>
           </div>
@@ -673,24 +615,9 @@ export default function Page() {
       <Section id="about" title="About My Journey" theme={theme} delay={100}>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            {
-              h: "Past",
-              t: "Began my career as a Test Automation Engineer, building QA frameworks, and then transitioned into backend development.",
-              icon: "📚",
-              gradient: "from-teal-400 to-emerald-500",
-            },
-            {
-              h: "Present",
-              t: "Building secure, scalable microservices for banking & training platforms; driving CI/CD and observability.",
-              icon: "🚀",
-              gradient: "from-emerald-400 to-cyan-500",
-            },
-            {
-              h: "Future",
-              t: "Designing event-driven systems at scale, with a focus on reliability and developer productivity.",
-              icon: "🌟",
-              gradient: "from-cyan-400 to-teal-500",
-            },
+            { h: "Past", t: "Began my career as a Test Automation Engineer, building QA frameworks, and then transitioned into backend development.", icon: "📚", gradient: "from-teal-400 to-emerald-500" },
+            { h: "Present", t: "Building secure, scalable microservices for banking & training platforms; driving CI/CD and observability.", icon: "🚀", gradient: "from-emerald-400 to-cyan-500" },
+            { h: "Future", t: "Designing event-driven systems at scale, with a focus on reliability and developer productivity.", icon: "🌟", gradient: "from-cyan-400 to-teal-500" },
           ].map((period, index) => (
             <Card key={period.h} theme={theme} delay={index * 200} gradient={period.gradient}>
               <div className="text-white text-center">
@@ -725,7 +652,26 @@ export default function Page() {
 
       <Section id="projects" title="Featured Projects" theme={theme} delay={300}>
         <div className="grid lg:grid-cols-3 gap-8">
-          {PROJECTS.map((project, index) => (
+          {[
+            {
+              name: "US Bank – Loan Processing Platform",
+              summary: "High-throughput microservices with Kafka and AWS; reduced API p95 by ~35%.",
+              madeWith: ["Java 17", "Spring Boot", "Kafka", "Docker", "Kubernetes", "AWS"],
+              gradient: "from-emerald-400 to-teal-500",
+            },
+            {
+              name: "NRA – Training & Certification LMS",
+              summary: "APIs for registration, quiz scoring, certificate issuance; batch jobs for compliance exports.",
+              madeWith: ["Spring Boot", "Spring Batch", "Oracle PL/SQL", "Splunk"],
+              gradient: "from-teal-400 to-cyan-500",
+            },
+            {
+              name: "QVC – Automation Suite",
+              summary: "Hybrid Selenium/TestNG framework with BrowserStack coverage + CI/CD integration.",
+              madeWith: ["Java", "Selenium", "TestNG", "REST Assured", "Jenkins"],
+              gradient: "from-green-400 to-emerald-500",
+            },
+          ].map((project, index) => (
             <Card key={project.name} theme={theme} gradient={project.gradient} delay={index * 200}>
               <div className="text-white">
                 <h3 className="text-xl font-bold mb-4">{project.name}</h3>
@@ -746,12 +692,7 @@ export default function Page() {
       <Section id="cta" title="Want To..." theme={theme} delay={400}>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            {
-              h: "Offer job opportunity?",
-              t: "Open to backend/SDET roles building Java/Spring systems and automation.",
-              a: { href: `mailto:${PROFILE.email}`, label: "Email me" },
-              icon: "💼",
-            },
+            { h: "Offer job opportunity?", t: "Open to backend/SDET roles building Java/Spring systems and automation.", a: { href: `mailto:${PROFILE.email}`, label: "Email me" }, icon: "💼" },
             {
               h: "Connect?",
               t: "Always happy to chat about backend architecture, testing, and DevOps.",
@@ -788,22 +729,14 @@ export default function Page() {
         <Card theme={theme} className="max-w-4xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <a href={`mailto:${PROFILE.email}`} className="group block">
-              <div
-                className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${
-                  theme.name === "darkEmerald" ? "bg-emerald-500/20 group-hover:bg-emerald-500/30" : "bg-teal-500/20 group-hover:bg-teal-500/30"
-                } transition-all duration-300 group-hover:scale-110`}
-              >
+              <div className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${theme.name === "darkEmerald" ? "bg-emerald-500/20 group-hover:bg-emerald-500/30" : "bg-teal-500/20 group-hover:bg-teal-500/30"} transition-all duration-300 group-hover:scale-110`}>
                 <Mail className="w-8 h-8 mx-auto" />
               </div>
               <div className="font-medium">{PROFILE.email}</div>
             </a>
 
             <a href={`tel:${PROFILE.phone}`} className="group block">
-              <div
-                className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${
-                  theme.name === "darkEmerald" ? "bg-teal-500/20 group-hover:bg-teal-500/30" : "bg-emerald-500/20 group-hover:bg-emerald-500/30"
-                } transition-all duration-300 group-hover:scale-110`}
-              >
+              <div className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${theme.name === "darkEmerald" ? "bg-teal-500/20 group-hover:bg-teal-500/30" : "bg-emerald-500/20 group-hover:bg-emerald-500/30"} transition-all duration-300 group-hover:scale-110`}>
                 <Phone className="w-8 h-8 mx-auto" />
               </div>
               <div className="font-medium">{PROFILE.phone}</div>
