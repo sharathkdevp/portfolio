@@ -2,8 +2,10 @@
 
 import React, { useEffect, useState, useRef } from "react";
 
-// ===== Helpers =====
-const isHttpUrl = (url) => {
+/* =======================
+   Helpers
+======================= */
+const isHttpUrl = (url: string) => {
   try {
     const u = new URL(url);
     return u.protocol === "http:" || u.protocol === "https:";
@@ -12,7 +14,9 @@ const isHttpUrl = (url) => {
   }
 };
 
-// SVG Icons as React components
+/* =======================
+   SVG Icons
+======================= */
 const Mail = ({ className = "w-4 h-4" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -63,9 +67,9 @@ const Moon = ({ className = "w-4 h-4" }) => (
   </svg>
 );
 
-// =============================================
-// THEMES — only Emerald/Teal
-// =============================================
+/* =======================
+   Themes (Emerald only)
+======================= */
 const THEMES = {
   darkEmerald: {
     name: "darkEmerald",
@@ -91,9 +95,9 @@ const THEMES = {
   },
 };
 
-// =============================================
-// SITE DATA
-// =============================================
+/* =======================
+   Site Data
+======================= */
 const PROFILE = {
   name: "Sharath Kandagattla",
   tagline: "Backend Developer / Software Developer · Java/Spring",
@@ -117,35 +121,34 @@ const SKILL_GROUPS = [
 ];
 
 const PROJECTS = [
-  { 
-    name: "US Bank – Loan Processing Platform", 
-    summary: "High-throughput microservices with Kafka and AWS; reduced API p95 by ~35%.", 
+  {
+    name: "US Bank – Loan Processing Platform",
+    summary: "High-throughput microservices with Kafka and AWS; reduced API p95 by ~35%.",
     madeWith: ["Java 17", "Spring Boot", "Kafka", "Docker", "Kubernetes", "AWS"],
-    gradient: "from-emerald-400 to-teal-500"
+    gradient: "from-emerald-400 to-teal-500",
   },
-  { 
-    name: "NRA – Training & Certification LMS", 
-    summary: "APIs for registration, quiz scoring, certificate issuance; batch jobs for compliance exports.", 
+  {
+    name: "NRA – Training & Certification LMS",
+    summary: "APIs for registration, quiz scoring, certificate issuance; batch jobs for compliance exports.",
     madeWith: ["Spring Boot", "Spring Batch", "Oracle PL/SQL", "Splunk"],
-    gradient: "from-teal-400 to-cyan-500"
+    gradient: "from-teal-400 to-cyan-500",
   },
-  { 
-    name: "QVC – Automation Suite", 
-    summary: "Hybrid Selenium/TestNG framework with BrowserStack coverage + CI/CD integration.", 
+  {
+    name: "QVC – Automation Suite",
+    summary: "Hybrid Selenium/TestNG framework with BrowserStack coverage + CI/CD integration.",
     madeWith: ["Java", "Selenium", "TestNG", "REST Assured", "Jenkins"],
-    gradient: "from-green-400 to-emerald-500"
+    gradient: "from-green-400 to-emerald-500",
   },
 ];
 
-// =============================================
-// Components
-// =============================================
-const FloatingParticles = ({ theme }) => {
-  const particleRefs = useRef([]);
+/* =======================
+   UI Components
+======================= */
+const FloatingParticles = ({ theme }: { theme: any }) => {
+  const particleRefs = useRef<HTMLDivElement[]>([] as any);
 
   useEffect(() => {
     const particles = particleRefs.current;
-
     particles.forEach((particle, index) => {
       if (particle) {
         const animateParticle = () => {
@@ -155,18 +158,20 @@ const FloatingParticles = ({ theme }) => {
           const endX = startX + (Math.random() - 0.5) * 300;
           const endY = -50;
 
-          particle.style.left = startX + 'px';
-          particle.style.top = startY + 'px';
-          particle.style.opacity = '0';
+          particle.style.left = startX + "px";
+          particle.style.top = startY + "px";
+          particle.style.opacity = "0";
 
-          particle.animate(
-            [
-              { transform: `translate(0, 0) scale(0.5)`, opacity: 0 },
-              { transform: `translate(0, -100px) scale(1)`, opacity: 0.7, offset: 0.1 },
-              { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(0.5)`, opacity: 0 }
-            ],
-            { duration, easing: 'ease-out' }
-          ).onfinish = () => {
+          particle
+            .animate(
+              [
+                { transform: `translate(0, 0) scale(0.5)`, opacity: 0 },
+                { transform: `translate(0, -100px) scale(1)`, opacity: 0.7, offset: 0.1 },
+                { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(0.5)`, opacity: 0 },
+              ],
+              { duration, easing: "ease-out" }
+            )
+            .onfinish = () => {
             setTimeout(animateParticle, Math.random() * 5000);
           };
         };
@@ -181,10 +186,12 @@ const FloatingParticles = ({ theme }) => {
       {[...Array(20)].map((_, i) => (
         <div
           key={i}
-          ref={(el) => (particleRefs.current[i] = el)}
-          className={`absolute w-1 h-1 rounded-full ${theme.name === 'darkEmerald' ? 'bg-emerald-400' : 'bg-teal-400'}`}
+          ref={(el) => (particleRefs.current[i] = el as any)}
+          className={`absolute w-1 h-1 rounded-full ${
+            theme.name === "darkEmerald" ? "bg-emerald-400" : "bg-teal-400"
+          }`}
           style={{
-            boxShadow: `0 0 10px ${theme.name === 'darkEmerald' ? '#34d399' : '#2dd4bf'}`,
+            boxShadow: `0 0 10px ${theme.name === "darkEmerald" ? "#34d399" : "#2dd4bf"}`,
           }}
         />
       ))}
@@ -192,29 +199,35 @@ const FloatingParticles = ({ theme }) => {
   );
 };
 
-const AnimatedBackground = ({ theme }) => (
+const AnimatedBackground = ({ theme }: { theme: any }) => (
   <div className="fixed inset-0 -z-10">
     <div className={`absolute inset-0 ${theme.gradientBg}`}>
       <div className="absolute inset-0 overflow-hidden">
         <div
           className="absolute -top-40 -left-40 w-96 h-96 rounded-full opacity-30 animate-pulse"
           style={{
-            background: `radial-gradient(circle, ${theme.name === 'darkEmerald' ? '#10b981' : '#14b8a6'} 0%, transparent 70%)`,
-            animation: 'float 6s ease-in-out infinite'
+            background: `radial-gradient(circle, ${
+              theme.name === "darkEmerald" ? "#10b981" : "#14b8a6"
+            } 0%, transparent 70%)`,
+            animation: "float 6s ease-in-out infinite",
           }}
         />
         <div
           className="absolute top-1/2 -right-40 w-80 h-80 rounded-full opacity-20 animate-pulse"
           style={{
-            background: `radial-gradient(circle, ${theme.name === 'darkEmerald' ? '#06b6d4' : '#0ea5e9'} 0%, transparent 70%)`,
-            animation: 'float 8s ease-in-out infinite reverse'
+            background: `radial-gradient(circle, ${
+              theme.name === "darkEmerald" ? "#06b6d4" : "#0ea5e9"
+            } 0%, transparent 70%)`,
+            animation: "float 8s ease-in-out infinite reverse",
           }}
         />
         <div
           className="absolute -bottom-40 left-1/3 w-96 h-96 rounded-full opacity-25 animate-pulse"
           style={{
-            background: `radial-gradient(circle, ${theme.name === 'darkEmerald' ? '#22d3ee' : '#99f6e4'} 0%, transparent 70%)`,
-            animation: 'float 10s ease-in-out infinite'
+            background: `radial-gradient(circle, ${
+              theme.name === "darkEmerald" ? "#22d3ee" : "#99f6e4"
+            } 0%, transparent 70%)`,
+            animation: "float 10s ease-in-out infinite",
           }}
         />
       </div>
@@ -222,17 +235,36 @@ const AnimatedBackground = ({ theme }) => (
 
     <style jsx>{`
       @keyframes float {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        33% { transform: translate(30px, -30px) rotate(120deg); }
-        66% { transform: translate(-20px, 20px) rotate(240deg); }
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        33% {
+          transform: translate(30px, -30px) rotate(120deg);
+        }
+        66% {
+          transform: translate(-20px, 20px) rotate(240deg);
+        }
       }
     `}</style>
   </div>
 );
 
-const Section = ({ id, title, theme, children, delay = 0 }) => {
+const Section = ({
+  id,
+  title,
+  theme,
+  children,
+  delay = 0,
+}: {
+  id: string;
+  title: string;
+  theme: any;
+  children: React.ReactNode;
+  delay?: number;
+}) => {
   const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef();
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -250,10 +282,10 @@ const Section = ({ id, title, theme, children, delay = 0 }) => {
 
   return (
     <section
-      ref={sectionRef}
+      ref={sectionRef as any}
       id={id}
       className={`scroll-mt-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 transition-all duration-1000 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       }`}
     >
       <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight mb-12 text-center ${theme.heading}`}>
@@ -264,9 +296,19 @@ const Section = ({ id, title, theme, children, delay = 0 }) => {
   );
 };
 
-const Pill = ({ theme, children, className = "", delay = 0 }) => {
+const Pill = ({
+  theme,
+  children,
+  className = "",
+  delay = 0,
+}: {
+  theme: any;
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) => {
   const [isVisible, setIsVisible] = useState(false);
-  const pillRef = useRef();
+  const pillRef = useRef<HTMLSpanElement | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -286,7 +328,7 @@ const Pill = ({ theme, children, className = "", delay = 0 }) => {
     <span
       ref={pillRef}
       className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-500 transform cursor-pointer ${theme.pill} ${className} ${
-        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'
+        isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"
       }`}
     >
       {children}
@@ -294,10 +336,22 @@ const Pill = ({ theme, children, className = "", delay = 0 }) => {
   );
 };
 
-const Card = ({ theme, children, className = "", gradient = "", delay = 0 }) => {
+const Card = ({
+  theme,
+  children,
+  className = "",
+  gradient = "",
+  delay = 0,
+}: {
+  theme: any;
+  children: React.ReactNode;
+  className?: string;
+  gradient?: string;
+  delay?: number;
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const cardRef = useRef();
+  const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -317,13 +371,13 @@ const Card = ({ theme, children, className = "", gradient = "", delay = 0 }) => 
     <div
       ref={cardRef}
       className={`rounded-3xl p-8 transition-all duration-700 transform cursor-pointer ${theme.card} ${className} ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      } ${isHovered ? 'scale-105 -rotate-1' : 'scale-100 rotate-0'}`}
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      } ${isHovered ? "scale-105 -rotate-1" : "scale-100 rotate-0"}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
-        transformStyle: 'preserve-3d',
-        background: gradient ? `linear-gradient(135deg, ${gradient.split(' ').join(', ')})` : undefined
+        transformStyle: "preserve-3d",
+        background: gradient ? `linear-gradient(135deg, ${gradient.split(" ").join(", ")})` : undefined,
       }}
     >
       {gradient && <div className="absolute inset-0 bg-black/20 rounded-3xl backdrop-blur-sm" />}
@@ -332,17 +386,14 @@ const Card = ({ theme, children, className = "", gradient = "", delay = 0 }) => 
   );
 };
 
-const TechMarquee = ({ items, theme }) => (
+const TechMarquee = ({ items, theme }: { items: string[]; theme: any }) => (
   <div className="relative py-12 overflow-hidden">
     <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10" />
     <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent z-10" />
 
     <div className="flex gap-6 py-3 whitespace-nowrap animate-scroll-fast">
       {[...items, ...items].map((tech, i) => (
-        <div
-          key={i}
-          className={`px-6 py-3 rounded-2xl text-sm font-medium ${theme.pill} hover:scale-110 transition-transform`}
-        >
+        <div key={i} className={`px-6 py-3 rounded-2xl text-sm font-medium ${theme.pill} hover:scale-110 transition-transform`}>
           {tech}
         </div>
       ))}
@@ -350,10 +401,7 @@ const TechMarquee = ({ items, theme }) => (
 
     <div className="flex gap-6 py-3 whitespace-nowrap animate-scroll-reverse">
       {[...items.slice(8), ...items.slice(8)].map((tech, i) => (
-        <div
-          key={i}
-          className={`px-6 py-3 rounded-2xl text-sm font-medium ${theme.pill} hover:scale-110 transition-transform`}
-        >
+        <div key={i} className={`px-6 py-3 rounded-2xl text-sm font-medium ${theme.pill} hover:scale-110 transition-transform`}>
           {tech}
         </div>
       ))}
@@ -361,22 +409,47 @@ const TechMarquee = ({ items, theme }) => (
 
     <style jsx>{`
       @keyframes scroll-fast {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
       }
       @keyframes scroll-reverse {
-        0% { transform: translateX(-50%); }
-        100% { transform: translateX(0); }
+        0% {
+          transform: translateX(-50%);
+        }
+        100% {
+          transform: translateX(0);
+        }
       }
-      .animate-scroll-fast { animation: scroll-fast 25s linear infinite; }
-      .animate-scroll-reverse { animation: scroll-reverse 20s linear infinite; }
+      .animate-scroll-fast {
+        animation: scroll-fast 25s linear infinite;
+      }
+      .animate-scroll-reverse {
+        animation: scroll-reverse 20s linear infinite;
+      }
     `}</style>
   </div>
 );
 
-
-function RoleRotator({ roles, theme, height = 80, intervalMs = 4500, transitionMs = 900 }) {
-  // Duplicate first item for a seamless loop
+/* =======================
+   Role Rotator (smooth loop)
+======================= */
+function RoleRotator({
+  roles,
+  theme,
+  height = 80,
+  intervalMs = 4500,
+  transitionMs = 900,
+}: {
+  roles: string[];
+  theme: any;
+  height?: number;
+  intervalMs?: number;
+  transitionMs?: number;
+}) {
   const loop = [...roles, roles[0]];
   const [idx, setIdx] = React.useState(0);
   const [enableTransition, setEnableTransition] = React.useState(true);
@@ -386,12 +459,11 @@ function RoleRotator({ roles, theme, height = 80, intervalMs = 4500, transitionM
     return () => clearInterval(id);
   }, [intervalMs]);
 
-  // When we hit the cloned last slide, snap back to 0 without animation
   const handleTransitionEnd = () => {
     if (idx === loop.length - 1) {
-      setEnableTransition(false);      // turn off transition to avoid flash
-      setIdx(0);                       // snap back to the real first slide
-      requestAnimationFrame(() => {    // re-enable transition on next paint
+      setEnableTransition(false);
+      setIdx(0);
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => setEnableTransition(true));
       });
     }
@@ -409,14 +481,8 @@ function RoleRotator({ roles, theme, height = 80, intervalMs = 4500, transitionM
         }}
       >
         {loop.map((role, i) => (
-          <div
-            key={`${role}-${i}`}
-            style={{ height }}
-            className="flex items-center"
-          >
-            <span className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${theme.glowText}`}>
-              {role}
-            </span>
+          <div key={`${role}-${i}`} style={{ height }} className="flex items-center">
+            <span className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${theme.glowText}`}>{role}</span>
           </div>
         ))}
       </div>
@@ -424,27 +490,25 @@ function RoleRotator({ roles, theme, height = 80, intervalMs = 4500, transitionM
   );
 }
 
-// =============================================
-// Main Component
-// =============================================
+/* =======================
+   Main Page
+======================= */
 export default function Page() {
-  const [themeName, setThemeName] = useState("darkEmerald");
+  const [themeName, setThemeName] = useState<keyof typeof THEMES>("darkEmerald");
   const [mounted, setMounted] = useState(false);
-  const [roleIdx, setRoleIdx] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const saved = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    let next = saved === "lightEmerald" || saved === "darkEmerald" ? saved : "darkEmerald";
-    setThemeName(next);
+    const nextTheme = saved === "lightEmerald" || saved === "darkEmerald" ? (saved as keyof typeof THEMES) : "darkEmerald";
+    setThemeName(nextTheme);
     setMounted(true);
   }, []);
 
-
   useEffect(() => {
-    const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    const handleMouseMove = (e: MouseEvent) => setMousePosition({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   const theme = THEMES[themeName];
@@ -453,7 +517,7 @@ export default function Page() {
     setThemeName((t) => {
       const next = t === "darkEmerald" ? "lightEmerald" : "darkEmerald";
       if (typeof window !== "undefined") localStorage.setItem("theme", next);
-      return next;
+      return next as keyof typeof THEMES;
     });
   };
 
@@ -462,14 +526,14 @@ export default function Page() {
       <AnimatedBackground theme={theme} />
       <FloatingParticles theme={theme} />
 
-      {/* Custom Cursor Effect */}
+      {/* Custom Cursor */}
       {mounted && (
         <div
           className="fixed w-4 h-4 rounded-full pointer-events-none z-50 mix-blend-difference bg-white"
           style={{
             left: mousePosition.x - 8,
             top: mousePosition.y - 8,
-            transition: 'transform 0.1s ease'
+            transition: "transform 0.1s ease",
           }}
         />
       )}
@@ -477,10 +541,7 @@ export default function Page() {
       {/* Navigation */}
       <header className={`sticky top-0 z-40 ${theme.nav}`}>
         <nav className="mx-auto max-w-6xl flex items-center justify-between px-6 h-20">
-          <a
-            href="#home"
-            className={`text-2xl font-bold tracking-tight transition-all duration-300 hover:scale-110 ${theme.heading}`}
-          >
+          <a href="#home" className={`text-2xl font-bold tracking-tight transition-all duration-300 hover:scale-110 ${theme.heading}`}>
             {PROFILE.name}
           </a>
           <div className="flex items-center gap-8">
@@ -489,13 +550,9 @@ export default function Page() {
                 { href: "#about", label: "About" },
                 { href: "#skills", label: "Skills" },
                 { href: "#projects", label: "Projects" },
-                { href: "#contact", label: "Contact" }
+                { href: "#contact", label: "Contact" },
               ].map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  className="relative group transition-all duration-300 hover:scale-110"
-                >
+                <a key={l.href} href={l.href} className="relative group transition-all duration-300 hover:scale-110">
                   {l.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-400 group-hover:w-full transition-all duration-300" />
                 </a>
@@ -512,68 +569,55 @@ export default function Page() {
         </nav>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section id="home" className="relative min-h-screen flex items-center justify-center px-6">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div className="text-center lg:text-left">
             <div className="animate-fadeInUp">
-              <p className={`uppercase tracking-[0.2em] text-sm mb-6 opacity-80 ${theme.heading}`}>
-                Hello! I am
-              </p>
+              <p className={`uppercase tracking-[0.2em] text-sm mb-6 opacity-80 ${theme.heading}`}>Hello! I am</p>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-8 leading-tight">
                 <span className={theme.heading}>{PROFILE.name}</span>
               </h1>
 
-              <div className="h-20 mb-8 overflow-hidden">
-                <div
-                  className="transition-transform duration-700 ease-in-out"
-                  style={{ transform: `translateY(-${roleIdx * 100}%)` }}
-                >
-                  {PROFILE.roles.map((role, index) => (
-                    <div key={index} className="h-20 flex items-center">
-                      <span className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${theme.glowText}`}>
-                        {role}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <RoleRotator roles={PROFILE.roles} theme={theme} height={80} intervalMs={4500} transitionMs={900} />
 
-              <p className="text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl opacity-90 text-justify hyphens-auto">
-                {PROFILE.blurb}
-              </p>
+              <p className="text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl opacity-90 text-justify hyphens-auto">{PROFILE.blurb}</p>
 
               <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-12">
                 <Pill theme={theme}>
-                  <MapPin className="w-4 h-4 mr-2" />{PROFILE.location}
+                  <MapPin className="w-4 h-4 mr-2" />
+                  {PROFILE.location}
                 </Pill>
                 <a href={`mailto:${PROFILE.email}`} className="no-underline">
                   <Pill theme={theme}>
-                    <Mail className="w-4 h-4 mr-2" />{PROFILE.email}
+                    <Mail className="w-4 h-4 mr-2" />
+                    {PROFILE.email}
                   </Pill>
                 </a>
                 <a href={`tel:${PROFILE.phone}`} className="no-underline">
                   <Pill theme={theme}>
-                    <Phone className="w-4 h-4 mr-2" />{PROFILE.phone}
+                    <Phone className="w-4 h-4 mr-2" />
+                    {PROFILE.phone}
                   </Pill>
                 </a>
                 {isHttpUrl(PROFILE.links.linkedin) && (
                   <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className="no-underline">
                     <Pill theme={theme}>
-                      <Linkedin className="w-4 h-4 mr-2" />LinkedIn
+                      <Linkedin className="w-4 h-4 mr-2" />
+                      LinkedIn
                     </Pill>
                   </a>
                 )}
                 {isHttpUrl(PROFILE.links.github) && (
                   <a href={PROFILE.links.github} target="_blank" rel="noreferrer" className="no-underline">
                     <Pill theme={theme}>
-                      <Github className="w-4 h-4 mr-2" />GitHub
+                      <Github className="w-4 h-4 mr-2" />
+                      GitHub
                     </Pill>
                   </a>
                 )}
               </div>
 
-              {/* Buttons */}
               <div className="flex gap-6 justify-center lg:justify-start">
                 <a href="#contact" className={`px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 ${theme.btnPrimary}`}>
                   Get In Touch
@@ -581,9 +625,7 @@ export default function Page() {
                 <a
                   href="#projects"
                   className={`px-8 py-4 rounded-2xl font-semibold text-lg border-2 transition-all duration-300 hover:scale-105 ${
-                    theme.name === 'darkEmerald'
-                      ? 'border-slate-600 hover:border-emerald-400 hover:bg-slate-800'
-                      : 'border-slate-300 hover:border-teal-400 hover:bg-slate-50'
+                    theme.name === "darkEmerald" ? "border-slate-600 hover:border-emerald-400 hover:bg-slate-800" : "border-slate-300 hover:border-teal-400 hover:bg-slate-50"
                   }`}
                 >
                   View Work
@@ -596,13 +638,13 @@ export default function Page() {
             <Card theme={theme} className="relative z-10" delay={300}>
               <h3 className={`text-2xl font-bold mb-6 ${theme.heading}`}>Core Focus</h3>
               <div className="grid gap-4">
-                {["🚀 Java / Spring Boot","⚡ Microservices","🗄️ SQL & Data Modeling","📡 Kafka & Messaging","🐳 CI/CD, Docker, K8s","🧪 Test Automation (SDET)"].map((item, index) => (
+                {["🚀 Java / Spring Boot", "⚡ Microservices", "🗄️ SQL & Data Modeling", "📡 Kafka & Messaging", "🐳 CI/CD, Docker, K8s", "🧪 Test Automation (SDET)"].map((item, index) => (
                   <div
                     key={item}
                     className="flex items-center gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-105"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <span className="text-2xl">{item.split(' ')[0]}</span>
+                    <span className="text-2xl">{item.split(" ")[0]}</span>
                     <span className="font-medium">{item.substring(2)}</span>
                   </div>
                 ))}
@@ -614,15 +656,49 @@ export default function Page() {
 
       <TechMarquee
         theme={theme}
-        items={["Java(8/11/17)","Spring Boot","Spring Security","Spring Cloud","Kafka","PostgreSQL","Oracle","Docker","Kubernetes","AWS","JUnit","TestNG","Selenium WebDriver","REST Assured","Jenkins","Git","Maven","Microservices"]}
+        items={[
+          "Java(8/11/17)",
+          "Spring Boot",
+          "Spring Security",
+          "Spring Cloud",
+          "Kafka",
+          "PostgreSQL",
+          "Oracle",
+          "Docker",
+          "Kubernetes",
+          "AWS",
+          "JUnit",
+          "TestNG",
+          "Selenium WebDriver",
+          "REST Assured",
+          "Jenkins",
+          "Git",
+          "Maven",
+          "Microservices",
+        ]}
       />
 
       <Section id="about" title="About My Journey" theme={theme} delay={100}>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { h: "Past", t: "Began my career as a Test Automation Engineer, building QA frameworks, and then transitioned into backend development.", icon: "📚", gradient: "from-teal-400 to-emerald-500" },
-            { h: "Present", t: "Building secure, scalable microservices for banking & training platforms; driving CI/CD and observability.", icon: "🚀", gradient: "from-emerald-400 to-cyan-500" },
-            { h: "Future", t: "Designing event-driven systems at scale, with a focus on reliability and developer productivity.", icon: "🌟", gradient: "from-cyan-400 to-teal-500" },
+            {
+              h: "Past",
+              t: "Began my career as a Test Automation Engineer, building QA frameworks, and then transitioned into backend development.",
+              icon: "📚",
+              gradient: "from-teal-400 to-emerald-500",
+            },
+            {
+              h: "Present",
+              t: "Building secure, scalable microservices for banking & training platforms; driving CI/CD and observability.",
+              icon: "🚀",
+              gradient: "from-emerald-400 to-cyan-500",
+            },
+            {
+              h: "Future",
+              t: "Designing event-driven systems at scale, with a focus on reliability and developer productivity.",
+              icon: "🌟",
+              gradient: "from-cyan-400 to-teal-500",
+            },
           ].map((period, index) => (
             <Card key={period.h} theme={theme} delay={index * 200} gradient={period.gradient}>
               <div className="text-white text-center">
@@ -640,9 +716,7 @@ export default function Page() {
           {SKILL_GROUPS.map((group, groupIndex) => (
             <Card key={group.label} theme={theme} delay={groupIndex * 150}>
               <div className="flex items-center gap-4 mb-6">
-                <div className={`p-3 rounded-xl ${theme.name === 'darkEmerald' ? 'bg-emerald-500/20' : 'bg-teal-500/20'}`}>
-                  {group.icon}
-                </div>
+                <div className={`p-3 rounded-xl ${theme.name === "darkEmerald" ? "bg-emerald-500/20" : "bg-teal-500/20"}`}>{group.icon}</div>
                 <h3 className="text-xl font-bold">{group.label}</h3>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -680,9 +754,24 @@ export default function Page() {
       <Section id="cta" title="Want To..." theme={theme} delay={400}>
         <div className="grid md:grid-cols-3 gap-8">
           {[
-            { h: "Offer job opportunity?", t: "Open to backend/SDET roles building Java/Spring systems and automation.", a: { href: `mailto:${PROFILE.email}`, label: "Email me" }, icon: "💼" },
-            { h: "Connect?", t: "Always happy to chat about backend architecture, testing, and DevOps.", a: { href: isHttpUrl(PROFILE.links.linkedin) ? PROFILE.links.linkedin : "#contact", label: isHttpUrl(PROFILE.links.linkedin) ? "LinkedIn" : "Contact" }, icon: "🤝" },
-            { h: "Build something?", t: "Consulting on migrations, performance tuning, and CI/CD enablement.", a: { href: isHttpUrl(PROFILE.links.github) ? PROFILE.links.github : "#projects", label: isHttpUrl(PROFILE.links.github) ? "GitHub" : "Projects" }, icon: "🛠️" },
+            {
+              h: "Offer job opportunity?",
+              t: "Open to backend/SDET roles building Java/Spring systems and automation.",
+              a: { href: `mailto:${PROFILE.email}`, label: "Email me" },
+              icon: "💼",
+            },
+            {
+              h: "Connect?",
+              t: "Always happy to chat about backend architecture, testing, and DevOps.",
+              a: { href: isHttpUrl(PROFILE.links.linkedin) ? PROFILE.links.linkedin : "#contact", label: isHttpUrl(PROFILE.links.linkedin) ? "LinkedIn" : "Contact" },
+              icon: "🤝",
+            },
+            {
+              h: "Build something?",
+              t: "Consulting on migrations, performance tuning, and CI/CD enablement.",
+              a: { href: isHttpUrl(PROFILE.links.github) ? PROFILE.links.github : "#projects", label: isHttpUrl(PROFILE.links.github) ? "GitHub" : "Projects" },
+              icon: "🛠️",
+            },
           ].map((cta, index) => (
             <Card key={cta.h} theme={theme} delay={index * 200}>
               <div className="text-center">
@@ -691,8 +780,8 @@ export default function Page() {
                 <p className="mb-6 opacity-90 leading-relaxed">{cta.t}</p>
                 <a
                   href={cta.a.href}
-                  target={cta.a.href.startsWith('http') ? "_blank" : undefined}
-                  rel={cta.a.href.startsWith('http') ? "noreferrer" : undefined}
+                  target={cta.a.href.startsWith("http") ? "_blank" : undefined}
+                  rel={cta.a.href.startsWith("http") ? "noreferrer" : undefined}
                   className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold transition-all duration-300 ${theme.btnPrimary}`}
                 >
                   <ArrowRight className="w-4 h-4" /> {cta.a.label}
@@ -707,21 +796,33 @@ export default function Page() {
         <Card theme={theme} className="max-w-4xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <a href={`mailto:${PROFILE.email}`} className="group block">
-              <div className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${theme.name === 'darkEmerald' ? 'bg-emerald-500/20 group-hover:bg-emerald-500/30' : 'bg-teal-500/20 group-hover:bg-teal-500/30'} transition-all duration-300 group-hover:scale-110`}>
+              <div
+                className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${
+                  theme.name === "darkEmerald" ? "bg-emerald-500/20 group-hover:bg-emerald-500/30" : "bg-teal-500/20 group-hover:bg-teal-500/30"
+                } transition-all duration-300 group-hover:scale-110`}
+              >
                 <Mail className="w-8 h-8 mx-auto" />
               </div>
               <div className="font-medium">{PROFILE.email}</div>
             </a>
 
             <a href={`tel:${PROFILE.phone}`} className="group block">
-              <div className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${theme.name === 'darkEmerald' ? 'bg-teal-500/20 group-hover:bg-teal-500/30' : 'bg-emerald-500/20 group-hover:bg-emerald-500/30'} transition-all duration-300 group-hover:scale-110`}>
+              <div
+                className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${
+                  theme.name === "darkEmerald" ? "bg-teal-500/20 group-hover:bg-teal-500/30" : "bg-emerald-500/20 group-hover:bg-emerald-500/30"
+                } transition-all duration-300 group-hover:scale-110`}
+              >
                 <Phone className="w-8 h-8 mx-auto" />
               </div>
               <div className="font-medium">{PROFILE.phone}</div>
             </a>
 
             <div className="group">
-              <div className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${theme.name === 'darkEmerald' ? 'bg-cyan-500/20' : 'bg-teal-300/20'} transition-all duration-300 group-hover:scale-110`}>
+              <div
+                className={`p-4 rounded-2xl mb-4 mx-auto w-fit ${
+                  theme.name === "darkEmerald" ? "bg-cyan-500/20" : "bg-teal-300/20"
+                } transition-all duration-300 group-hover:scale-110`}
+              >
                 <MapPin className="w-8 h-8 mx-auto" />
               </div>
               <div className="font-medium">{PROFILE.location}</div>
@@ -729,7 +830,12 @@ export default function Page() {
 
             <div className="flex gap-4 justify-center items-center">
               {isHttpUrl(PROFILE.links.linkedin) && (
-                <a href={PROFILE.links.linkedin} target="_blank" rel="noreferrer" className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 ${theme.btnPrimary}`}>
+                <a
+                  href={PROFILE.links.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`p-3 rounded-xl transition-all duration-300 hover:scale-110 ${theme.btnPrimary}`}
+                >
                   <Linkedin className="w-6 h-6" />
                 </a>
               )}
@@ -745,23 +851,31 @@ export default function Page() {
 
       <footer className="py-12 border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <div className={`text-2xl font-bold mb-4 ${theme.heading}`}>
-            {PROFILE.name}
-          </div>
-          <div className="text-sm opacity-70">
-            © {new Date().getFullYear()} {PROFILE.name}. Crafted with passion and lots of coffee ☕
-          </div>
+          <div className={`text-2xl font-bold mb-4 ${theme.heading}`}>{PROFILE.name}</div>
+          <div className="text-sm opacity-70">© {new Date().getFullYear()} {PROFILE.name}. Crafted with passion and lots of coffee ☕</div>
         </div>
       </footer>
 
       <style jsx>{`
         @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        .animate-fadeInUp { animation: fadeInUp 1s ease-out; }
+        .animate-fadeInUp {
+          animation: fadeInUp 1s ease-out;
+        }
         @media (prefers-reduced-motion: reduce) {
-          * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
         }
       `}</style>
     </div>
